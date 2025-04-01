@@ -1,23 +1,31 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '@/components/NavBar';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import MochiMascot from '@/components/MochiMascot';
 
 const TopicCard = ({ 
+  id,
   title, 
   subtitle, 
   number, 
-  image 
+  image,
+  onClick
 }: { 
+  id: string;
   title: string; 
   subtitle: string; 
   number: number; 
-  image: string 
+  image: string;
+  onClick: () => void;
 }) => {
   return (
-    <div className="bg-green-500 hover:bg-green-600 transition-colors rounded-xl p-4 mb-4 cursor-pointer flex items-center gap-4">
+    <div 
+      className="bg-green-500 hover:bg-green-600 transition-colors rounded-xl p-4 mb-4 cursor-pointer flex items-center gap-4"
+      onClick={onClick}
+    >
       <div className="w-16 h-16 rounded-full overflow-hidden bg-white flex-shrink-0 border-2 border-white">
         <img src={image} alt={title} className="w-full h-full object-cover" />
       </div>
@@ -70,33 +78,43 @@ const PromoCard = ({
 };
 
 const Learn = () => {
+  const navigate = useNavigate();
+  
   // Mock data for topic cards
   const topics = [
     {
+      id: "1",
       title: "Human nature P1",
       subtitle: "Bản chất con người 1",
       number: 1,
       image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
     },
     {
+      id: "2",
       title: "Human nature P2",
       subtitle: "Bản chất con người 2",
       number: 2,
       image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04"
     },
     {
+      id: "3",
       title: "Human nature P3",
       subtitle: "Bản chất con người 3",
       number: 3,
       image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
     },
     {
+      id: "4",
       title: "Time for a change P1",
       subtitle: "Đến lúc thay đổi 1",
       number: 4,
       image: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1"
     }
   ];
+
+  const handleTopicClick = (topicId: string) => {
+    navigate(`/learn/topic/${topicId}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -121,13 +139,15 @@ const Learn = () => {
             </div>
             
             {/* Topic cards */}
-            {topics.map((topic, index) => (
+            {topics.map((topic) => (
               <TopicCard 
-                key={index}
+                key={topic.id}
+                id={topic.id}
                 title={topic.title}
                 subtitle={topic.subtitle}
                 number={topic.number}
                 image={topic.image}
+                onClick={() => handleTopicClick(topic.id)}
               />
             ))}
           </div>

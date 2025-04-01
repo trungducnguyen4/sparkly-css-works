@@ -10,6 +10,7 @@ import Learn from "./pages/Learn";
 import Notebook from "./pages/Notebook";
 import Chat from "./pages/Chat";
 import Hub from "./pages/Hub";
+import TopicDetail from "./pages/TopicDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/learn" element={<Learn />} />
+          <Route path="/learn/topic/:topicId" element={<TopicDetail />} />
           <Route path="/notebook" element={<Notebook />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/hub" element={<Hub />} />
