@@ -55,8 +55,11 @@ export function ModeSelect() {
                 <CommandItem
                   key={mode.value}
                   value={mode.value}
-                  onSelect={() => {
-                    setSelectedMode(mode);
+                  onSelect={(currentValue) => {
+                    const selected = learningModes.find(
+                      (mode) => mode.value === currentValue
+                    );
+                    setSelectedMode(selected || learningModes[0]);
                     setOpen(false);
                   }}
                 >
