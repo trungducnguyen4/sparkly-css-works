@@ -13,6 +13,15 @@ import MochiMascot from '@/components/MochiMascot';
 import { ModeSelect } from '@/components/ModeSelect';
 
 const Index = () => {
+  // Dữ liệu mẫu cho VocabChart
+  const vocabData = [
+    { day: 1, count: 15 },
+    { day: 2, count: 20 },
+    { day: 3, count: 10 },
+    { day: 4, count: 25 },
+    { day: 5, count: 30 },
+  ];
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
@@ -33,16 +42,16 @@ const Index = () => {
             <CardDescription>Bạn đã hoàn thành 35% mục tiêu tuần này</CardDescription>
           </CardHeader>
           <CardContent>
-            <ProgressBar value={35} />
-            <UserProgress />
+            <ProgressBar current={35} total={100} />
+            <UserProgress wordsLearned={245} streakDays={7} />
           </CardContent>
         </Card>
         
         {/* Statistics Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <StatCard title="Từ vựng" value="245" description="Số từ đã học" />
-          <StatCard title="Điểm kinh nghiệm" value="1,240" description="Tổng điểm XP" />
-          <StatCard title="Streak" value="7" description="Ngày liên tiếp" />
+          <StatCard title="Từ vựng" value="245" />
+          <StatCard title="Điểm kinh nghiệm" value="1,240" />
+          <StatCard title="Streak" value="7" />
         </div>
         
         {/* Vocabulary Progress */}
@@ -52,17 +61,21 @@ const Index = () => {
             <CardDescription>Số từ bạn đã học trong mỗi chủ đề</CardDescription>
           </CardHeader>
           <CardContent>
-            <VocabChart />
+            <VocabChart data={vocabData} maxCount={30} />
             <div className="space-y-4 mt-6">
-              <WordBar topic="Business" learned={28} total={50} />
-              <WordBar topic="Technology" learned={35} total={60} />
-              <WordBar topic="Travel" learned={12} total={40} />
+              <WordBar day={1} count={28} max={50} color="bg-red-500" />
+              <WordBar day={2} count={35} max={60} color="bg-blue-500" />
+              <WordBar day={3} count={12} max={40} color="bg-green-500" />
             </div>
           </CardContent>
         </Card>
         
         {/* Study Recommendation */}
-        <StudyPromo />
+        <StudyPromo 
+          title="Luyện thi IELTS với từ vựng chuyên ngành"
+          subtitle="Học từ vựng đúng trọng tâm"
+          buttonText="Học ngay"
+        />
         
         {/* Mascot */}
         <div className="fixed bottom-4 right-4">
