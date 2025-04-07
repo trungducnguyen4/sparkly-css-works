@@ -70,14 +70,6 @@ const Index = () => {
           </CardContent>
         </Card>
         
-        {/* Study Recommendation */}
-        <StudyPromo 
-          title="Luyện thi IELTS với từ vựng chuyên ngành"
-          subtitle="Học từ vựng đúng trọng tâm"
-          buttonText="Học ngay"
-        />
-        
-        {/* Mascot */}
         <div className="fixed bottom-4 right-4">
           <MochiMascot />
         </div>

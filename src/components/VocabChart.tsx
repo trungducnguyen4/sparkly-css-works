@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import WordBar from './WordBar';
 
 interface VocabDay {
@@ -13,6 +13,8 @@ interface VocabChartProps {
 }
 
 const VocabChart: React.FC<VocabChartProps> = ({ data, maxCount }) => {
+  const navigate = useNavigate();
+
   const getBarColor = (index: number) => {
     const colors = [
       'bg-red-500',      // 1
@@ -27,7 +29,9 @@ const VocabChart: React.FC<VocabChartProps> = ({ data, maxCount }) => {
   return (
     <div className="p-4 bg-white rounded-2xl shadow-sm">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-700">Chuẩn bị ôn tập: <span className="text-mochi-yellow">277</span> từ</h3>
+        <h3 className="text-lg font-semibold text-gray-700">
+          Chuẩn bị ôn tập: <span className="text-mochi-yellow">277</span> từ
+        </h3>
       </div>
       
       <div className="flex justify-between items-end">
@@ -44,7 +48,10 @@ const VocabChart: React.FC<VocabChartProps> = ({ data, maxCount }) => {
       </div>
       
       <div className="mt-6 flex justify-center">
-        <button className="mochi-button">
+        <button
+          className="mochi-button"
+          onClick={() => navigate('/review')}
+        >
           Ôn tập ngay
         </button>
       </div>
