@@ -1,48 +1,73 @@
 
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import NavBar from '@/components/NavBar';
-import StudyPromo from '@/components/StudyPromo';
-import VocabChart from '@/components/VocabChart';
+import ProgressBar from '@/components/ProgressBar';
+import StatCard from '@/components/StatCard';
 import UserProgress from '@/components/UserProgress';
+import VocabChart from '@/components/VocabChart';
+import WordBar from '@/components/WordBar';
+import StudyPromo from '@/components/StudyPromo';
+import MochiMascot from '@/components/MochiMascot';
+import { ModeSelect } from '@/components/ModeSelect';
 
 const Index = () => {
-  // Mock data for the vocabulary chart
-  const vocabData = [
-    { day: 1, count: 1 },
-    { day: 2, count: 4 },
-    { day: 3, count: 3 },
-    { day: 4, count: 9 },
-    { day: 5, count: 1785 },
-  ];
-  
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
-      
-      <main className="container mx-auto py-6 px-4">
-        <div className="grid grid-cols-1 gap-6">
-          {/* Study Promotion Banner */}
-          <StudyPromo 
-            title="ĐẠT 6.5 IELTS SAU 1 KHÓA HỌC"
-            buttonText="ĐĂNG KÝ NGAY"
-            onClick={() => console.log("Banner clicked")}
-          />
-          
-          {/* Vocabulary Progress Chart */}
-          <VocabChart data={vocabData} maxCount={2000} />
-          
-          {/* User Progress Stats */}
-          <UserProgress wordsLearned={2699} streakDays={1} />
+      <div className="container mx-auto py-8 px-4">
+        {/* Greeting and Mode Selection */}
+        <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-bold">Xin chào, học viên!</h1>
+            <p className="text-gray-600">Hãy tiếp tục hành trình học tiếng Anh của bạn</p>
+          </div>
+          <ModeSelect />
         </div>
-      </main>
-      
-      {/* Decorative elements */}
-      <div className="fixed bottom-10 right-10 w-40 h-40 z-10 pointer-events-none">
-        <img 
-          src="/lovable-uploads/a73464ce-3375-4eed-a835-dd2d0139e290.png" 
-          alt="Mochi Mascot" 
-          className="w-full h-full object-contain animate-float"
-        />
+        
+        {/* Progress Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Tiến độ của bạn</CardTitle>
+            <CardDescription>Bạn đã hoàn thành 35% mục tiêu tuần này</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProgressBar value={35} />
+            <UserProgress />
+          </CardContent>
+        </Card>
+        
+        {/* Statistics Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <StatCard title="Từ vựng" value="245" description="Số từ đã học" />
+          <StatCard title="Điểm kinh nghiệm" value="1,240" description="Tổng điểm XP" />
+          <StatCard title="Streak" value="7" description="Ngày liên tiếp" />
+        </div>
+        
+        {/* Vocabulary Progress */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Từ vựng theo chủ đề</CardTitle>
+            <CardDescription>Số từ bạn đã học trong mỗi chủ đề</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <VocabChart />
+            <div className="space-y-4 mt-6">
+              <WordBar topic="Business" learned={28} total={50} />
+              <WordBar topic="Technology" learned={35} total={60} />
+              <WordBar topic="Travel" learned={12} total={40} />
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Study Recommendation */}
+        <StudyPromo />
+        
+        {/* Mascot */}
+        <div className="fixed bottom-4 right-4">
+          <MochiMascot />
+        </div>
       </div>
     </div>
   );
