@@ -55,10 +55,8 @@ export function ModeSelect() {
                 <CommandItem
                   key={mode.value}
                   value={mode.value}
-                  onSelect={(value) => {
-                    // Instead of using array find, we'll directly map using the index
-                    const modeIndex = learningModes.findIndex(m => m.value === value);
-                    setSelectedMode(modeIndex !== -1 ? learningModes[modeIndex] : learningModes[0]);
+                  onSelect={() => {
+                    setSelectedMode(mode);
                     setOpen(false);
                   }}
                 >
