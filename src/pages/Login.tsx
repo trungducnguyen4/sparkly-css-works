@@ -1,14 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (event: React.FormEvent) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Add login logic here
-    navigate("/");
+    setError(null); // Clear previous errors
+
+    const email = (event.target as HTMLFormElement).email.value;
+    const password = (event.target as HTMLFormElement).password.value;
+
+    // Log email and password for debugging
+    console.log("Email:", email);
+    console.log("Password:", password);
+
+    try {
+      const response = await fetch("http://localhost:9090/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const contentType = response.headers.get("Content-Type") || "";
+
+        if (contentType.includes("application/json")) {
+          const errorData = await response.json();
+          console.error("Backend Error (JSON):", errorData); // Log JSON error
+          throw new Error(errorData.message || "Login failed");
+        } else {
+          const errorText = await response.text();
+          console.error("Backend Error (Text):", errorText); // Log text error
+          throw new Error(errorText || "Login failed");
+        }
+      }
+
+      const data = await response.json();
+
+      // Save login information to localStorage
+      localStorage.setItem("user", JSON.stringify(data));
+
+      // Save the auth token to sessionStorage
+      sessionStorage.setItem("authToken", data.token);
+
+      // Navigate to the home page on successful login
+      navigate("/");
+    } catch (err: any) {
+      console.error("Login Error:", err); // Log the error
+      setError(err.message); // Display the error message in the UI
+    }
   };
 
   return (
@@ -23,6 +68,7 @@ const Login = () => {
             <input
               type="email"
               id="email"
+              name="email"
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -34,10 +80,12 @@ const Login = () => {
             <input
               type="password"
               id="password"
+              name="password"
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+          {error && <p className="text-sm text-red-500">{error}</p>}
           <Button type="submit" className="w-full py-2">
             Đăng nhập
           </Button>

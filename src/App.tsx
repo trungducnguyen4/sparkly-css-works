@@ -14,6 +14,8 @@ import NotFound from "./pages/NotFound";
 import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import React from "react";
+import LearnedWordsBox from "./components/LearnedWordsBox";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <LearnedWordsBox />
     </TooltipProvider>
   </QueryClientProvider>
 );
