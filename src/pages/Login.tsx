@@ -41,6 +41,7 @@ const Login = () => {
       }
 
       const data = await response.json();
+      console.log("Backend response:", data); // Debug log to inspect the backend response
 
       // Save login information to localStorage
       localStorage.setItem("user", JSON.stringify(data));

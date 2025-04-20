@@ -16,31 +16,34 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import React from "react";
 import LearnedWordsBox from "./components/LearnedWordsBox";
+import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} /> {/* Login route */}
-          <Route path="/register" element={<Register />} /> {/* Register route */}
-          <Route path="/practice" element={<Practice />} />
-          <Route path="/learn" element={<Learn />} />
-          <Route path="/learn/topic/:topicId" element={<TopicDetail />} />
-          <Route path="/notebook" element={<Notebook />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/hub" element={<Hub />} />
-          <Route path="/review" element={<ReviewInterface />} /> {/* Register the ReviewInterface route */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-      <LearnedWordsBox />
+      <LearnedWordsProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} /> {/* Login route */}
+            <Route path="/register" element={<Register />} /> {/* Register route */}
+            <Route path="/practice" element={<Practice />} />
+            <Route path="/learn" element={<Learn />} />
+            <Route path="/learn/topic/:topicId" element={<TopicDetail />} />
+            <Route path="/notebook" element={<Notebook />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/hub" element={<Hub />} />
+            <Route path="/review" element={<ReviewInterface />} /> {/* Register the ReviewInterface route */}
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+        <LearnedWordsBox />
+      </LearnedWordsProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

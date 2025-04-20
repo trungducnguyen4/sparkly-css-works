@@ -13,14 +13,38 @@ export function ModeSelect() {
   const handleModeChange = async (mode) => {
     setSelectedMode(mode);
     console.log(`Selected mode: ${mode.label}`);
+  
+    // Retrieve user from localStorage
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+  
+    if (!user?.username) {
+      console.error("Username not found in localStorage");
+      setMessage("Failed to update learning mode: User not logged in.");
+      return;
+    }
+  
     try {
       const response = await fetch("http://localhost:9090/api/learning-mode/set", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ mode: mode.value }),
+        body: new URLSearchParams({
+          mode: mode.value,
+          username: user.username, // Send the username
+        }),
       });
-      const result = await response.text();
-      setMessage(result); // Display the backend response
+  
+      if (response.ok) {
+        const result = await response.text();
+        setMessage(result); // Display the backend response
+  
+        // Update learningMode in localStorage
+        const updatedUser = { ...user, learningMode: mode.value };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        console.log("Updated user in localStorage:", updatedUser);
+      } else {
+        console.error("Failed to update learning mode on the server");
+        setMessage("Failed to update learning mode.");
+      }
     } catch (error) {
       console.error("Error updating learning mode:", error);
       setMessage("Failed to update learning mode.");

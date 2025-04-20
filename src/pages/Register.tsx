@@ -14,7 +14,6 @@ const Register = () => {
     const name = (form.elements.namedItem("name") as HTMLInputElement).value;
     const email = (form.elements.namedItem("email") as HTMLInputElement).value;
     const password = (form.elements.namedItem("password") as HTMLInputElement).value;
-
   
     try {
       const response = await fetch("http://localhost:9090/api/auth/register", {
@@ -26,8 +25,8 @@ const Register = () => {
       });
   
       if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(errorMessage || "Registration failed");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Registration failed");
       }
   
       navigate("/login");

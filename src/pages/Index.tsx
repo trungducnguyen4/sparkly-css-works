@@ -37,42 +37,75 @@ const Index = () => {
         
         {/* Progress Section */}
         <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Tiến độ của bạn</CardTitle>
-            <CardDescription>Bạn đã hoàn thành 35% mục tiêu tuần này</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ProgressBar current={35} total={100} />
-            <UserProgress wordsLearned={245} streakDays={7} />
-          </CardContent>
-        </Card>
+  <CardHeader>
+    <CardTitle>Hành trình học của bạn</CardTitle>
+    <CardDescription>"To know your roots, speak the language of your ancestors — for in every word lies a piece of who you are."</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+      {/* Bài báo 1 */}
+      <Card className="hover:shadow-lg transition-shadow">
+        <CardHeader>
+          <CardTitle>10 Tips to Improve Your English</CardTitle>
+          <CardDescription>Learn practical tips to enhance your English skills effectively.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="link"
+            onClick={() => window.open('https://example.com/improve-english', '_blank')}
+          >
+            Read More
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Bài báo 2 */}
+      <Card className="hover:shadow-lg transition-shadow">
+        <CardHeader>
+          <CardTitle>How to Build Vocabulary</CardTitle>
+          <CardDescription>Discover strategies to expand your English vocabulary.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="link"
+            onClick={() => window.open('https://example.com/build-vocabulary', '_blank')}
+          >
+            Read More
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Bài báo 3 */}
+      <Card className="hover:shadow-lg transition-shadow">
+        <CardHeader>
+          <CardTitle>Mastering English Grammar</CardTitle>
+          <CardDescription>Understand the key rules of English grammar to improve your writing.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="link"
+            onClick={() => window.open('https://example.com/english-grammar', '_blank')}
+          >
+            Read More
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  </CardContent>
+</Card>
         
-        {/* Statistics Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <StatCard title="Từ vựng" value="245" />
-          <StatCard title="Điểm kinh nghiệm" value="1,240" />
-          <StatCard title="Streak" value="7" />
-        </div>
         
         {/* Vocabulary Progress */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Từ vựng theo chủ đề</CardTitle>
-            <CardDescription>Số từ bạn đã học trong mỗi chủ đề</CardDescription>
+            <CardTitle>Thống kê mức độ ghi nhớ</CardTitle>
+            <CardDescription>Spaced Repetition System (SRS) is a learning technique that helps improve long-term memory retention by reviewing information at increasing intervals. It uses the idea that we remember things better when we review them just before we’re about to forget them. SRS is commonly used in language learning and flashcard apps to make studying more efficient.</CardDescription>
           </CardHeader>
           <CardContent>
             <VocabChart data={vocabData} maxCount={30} />
-            <div className="space-y-4 mt-6">
-              <WordBar day={1} count={28} max={50} color="bg-red-500" />
-              <WordBar day={2} count={35} max={60} color="bg-blue-500" />
-              <WordBar day={3} count={12} max={40} color="bg-green-500" />
-            </div>
           </CardContent>
         </Card>
         
-        <div className="fixed bottom-4 right-4">
-          <MochiMascot />
-        </div>
       </div>
     </div>
   );

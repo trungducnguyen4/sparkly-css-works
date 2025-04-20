@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavBar from '../components/NavBar'; // Import the NavBar component
 
 const TopicCard = ({
   id,
@@ -66,6 +67,7 @@ const Learn = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <NavBar /> {/* Add the NavBar component here */}
       <div className="container mx-auto py-8 px-4">
         <button
           onClick={() => navigate('/')}
@@ -74,7 +76,7 @@ const Learn = () => {
           Quay lại trang chủ
         </button>
         <div className="bg-yellow-400 text-center py-4 px-8 rounded-xl mb-6">
-          <h2 className="text-xl font-bold text-blue-900">Danh sách khóa học</h2>
+          <h2 className="text-xl font-bold text-blue-900">Danh sách từ vựng theo chủ đề </h2>
         </div>
         {topics.map((topic, index) => (
           <TopicCard

@@ -34,18 +34,18 @@ const VocabChart: React.FC<VocabChartProps> = ({ data, maxCount }) => {
         </h3>
       </div>
       
-      <div className="flex justify-between items-end">
-        {data.map((item, index) => (
-          <WordBar 
-            key={item.day}
-            day={item.day} 
-            count={item.count} 
-            max={maxCount} 
-            color={getBarColor(index)}
-            isActive={index === 4} // Assuming day 5 is active as per image
-          />
-        ))}
-      </div>
+          <div className="flex justify-between items-end">
+      {data.slice(0, 5).map((item, index) => ( // Chỉ lấy 5 phần tử đầu tiên
+        <WordBar 
+          key={item.day}
+          day={item.day} 
+          count={item.count} 
+          max={maxCount} 
+          color={getBarColor(index)}
+          isActive={index === 4} // Assuming day 5 is active as per image
+        />
+      ))}
+</div>
       
       <div className="mt-6 flex justify-center">
         <button
