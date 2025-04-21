@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Adminmanager from "./pages/Adminmanager";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} /> {/* Login route */}
+          <Route path="/login" element={<Adminmanager />} /> {/* Login route */}
           <Route path="/register" element={<Register />} /> {/* Register route */}
           <Route path="/practice" element={<Practice />} />
           <Route path="/learn" element={<Learn />} />

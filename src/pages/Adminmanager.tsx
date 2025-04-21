@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import Update from './visibility.png'
+import Update from './visibility.png';
+import { useNavigate } from "react-router-dom";
 import Delete from './delete.png';
 import Plus from './plus .png';
-import "./index.css"
+import "./Adminmanager.css"
 export default (props) => {
 	const [input1, onChangeInput1] = useState('');
 	return (
