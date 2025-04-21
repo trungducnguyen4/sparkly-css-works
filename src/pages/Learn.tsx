@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import NavBar from '../components/NavBar'; // Import the NavBar component
 
 const TopicCard = ({
   id,
@@ -36,44 +38,36 @@ const TopicCard = ({
 
 const Learn = () => {
   const navigate = useNavigate();
+  const [topics, setTopics] = useState<any[]>([]); // Add state for topics
 
-  const topics = [
-    {
-      id: '1',
-      title: 'Human nature P1',
-      subtitle: 'Bản chất con người 1',
-      number: 1,
-      image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9',
-    },
-    {
-      id: '2',
-      title: 'Human nature P2',
-      subtitle: 'Bản chất con người 2',
-      number: 2,
-      image: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04',
-    },
-    {
-      id: '3',
-      title: 'Human nature P3',
-      subtitle: 'Bản chất con người 3',
-      number: 3,
-      image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9',
-    },
-    {
-      id: '4',
-      title: 'Time for a change P1',
-      subtitle: 'Đến lúc thay đổi 1',
-      number: 4,
-      image: 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1',
-    },
-  ];
+  useEffect(() => {
+    console.log('Fetching topics...');
+    const username = 'admin'; // Replace with your username
+    const password = '1'; // Replace with your password
+    const token = btoa(`${username}:${password}`); // Encode credentials in Base64
+
+    axios
+      .get('http://localhost:9090/api/topics', {
+        headers: {
+          Authorization: `Basic ${token}`, // Add Basic Auth header
+        },
+      })
+      .then((response) => {
+        console.log('Response received:', response.data);
+        setTopics(response.data); // Set the topics state
+      })
+      .catch((error) => {
+        console.error('Error fetching topics:', error);
+      });
+  }, []);
 
   const handleTopicClick = (topicId: string) => {
-    navigate(`/learn/topic/${topicId}`);
+    navigate(`/learn/topic/${topicId}`); // Fix typo: use navigate instead of navigator
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <NavBar /> {/* Add the NavBar component here */}
       <div className="container mx-auto py-8 px-4">
         <button
           onClick={() => navigate('/')}
@@ -82,16 +76,16 @@ const Learn = () => {
           Quay lại trang chủ
         </button>
         <div className="bg-yellow-400 text-center py-4 px-8 rounded-xl mb-6">
-          <h2 className="text-xl font-bold text-blue-900">Danh sách khóa học</h2>
+          <h2 className="text-xl font-bold text-blue-900">Danh sách từ vựng theo chủ đề </h2>
         </div>
-        {topics.map((topic) => (
+        {topics.map((topic, index) => (
           <TopicCard
             key={topic.id}
             id={topic.id}
-            title={topic.title}
-            subtitle={topic.subtitle}
-            number={topic.number}
-            image={topic.image}
+            title={topic.name}
+            subtitle={topic.description}
+            number={index + 1}
+            image={topic.image || 'https://via.placeholder.com/150'}
             onClick={() => handleTopicClick(topic.id)}
           />
         ))}

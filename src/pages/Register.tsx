@@ -1,15 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleRegister = (event: React.FormEvent) => {
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Add registration logic here
-    navigate("/login");
+    setError(null); // Clear previous errors
+  
+    const form = event.currentTarget as HTMLFormElement;
+    const name = (form.elements.namedItem("name") as HTMLInputElement).value;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+  
+    try {
+      const response = await fetch("http://localhost:9090/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: name, email, password }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Registration failed");
+      }
+  
+      navigate("/login");
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -23,6 +48,7 @@ const Register = () => {
             <input
               type="text"
               id="name"
+              name="name"
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -34,6 +60,7 @@ const Register = () => {
             <input
               type="email"
               id="email"
+              name="email"
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -45,10 +72,12 @@ const Register = () => {
             <input
               type="password"
               id="password"
+              name="password"
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+          {error && <p className="text-sm text-red-500">{error}</p>}
           <Button type="submit" className="w-full py-2">
             Đăng ký
           </Button>

@@ -1,19 +1,25 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, BarChart2, BookMarked, MessageSquare, User } from 'lucide-react';
 
 const NavBar = () => {
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Retrieve user data from localStorage
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user && user.username) {
+      setUsername(user.username); // Set the username
+    }
+  }, []);
+
   return (
     <header className="w-full bg-white shadow-sm py-2 px-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2">
           <div className="text-2xl font-bold text-mochi-yellow flex items-center">
-            <span className="text-black">MOCHI</span>
+            <span className="text-black">EZ</span>
             <span>VOCAB</span>
-            <div className="w-8 h-8 ml-1">
-              <img src="/lovable-uploads/a73464ce-3375-4eed-a835-dd2d0139e290.png" alt="Mochi Mascot" className="w-full h-full object-contain" />
-            </div>
           </div>
         </Link>
 
@@ -30,18 +36,20 @@ const NavBar = () => {
             <BookMarked className="h-5 w-5" />
             <span className="text-sm">Sổ tay</span>
           </Link>
-          <Link to="/chat" className="nav-item">
+          {/* <Link to="/chat" className="nav-item">
             <MessageSquare className="h-5 w-5" />
             <span className="text-sm">Hội thoại</span>
           </Link>
           <Link to="/hub" className="nav-item">
             <User className="h-5 w-5" />
             <span className="text-sm">MochiHub</span>
-          </Link>
+          </Link> */}
         </nav>
 
         <div className="flex items-center gap-3">
-          <div className="text-mochi-yellow font-semibold">Trung Đức</div>
+          <div className="text-mochi-yellow font-semibold">
+            {username || "Guest"} {/* Display username or fallback to "Guest" */}
+          </div>
           <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border-2 border-mochi-yellow">
             <img 
               src="/placeholder.svg" 
