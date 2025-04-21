@@ -14,10 +14,6 @@ import NotFound from "./pages/NotFound";
 import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Upgrade from "./pages/Upgrade";
-import Admin from "./pages/Admin";
-import React from "react";
-import LearnedWordsBox from "./components/LearnedWordsBox";
 import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
 
 const queryClient = new QueryClient();
@@ -25,28 +21,24 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <Toaster />
+      <Sonner />
       <LearnedWordsProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} /> {/* Login route */}
-            <Route path="/register" element={<Register />} /> {/* Register route */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/practice" element={<Practice />} />
             <Route path="/learn" element={<Learn />} />
             <Route path="/learn/topic/:topicId" element={<TopicDetail />} />
             <Route path="/notebook" element={<Notebook />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/hub" element={<Hub />} />
-            <Route path="/review" element={<ReviewInterface />} /> {/* Register the ReviewInterface route */}
-            <Route path="/upgrade" element={<Upgrade />} />
-            <Route path="/admin" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/review" element={<ReviewInterface />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-        <LearnedWordsBox />
       </LearnedWordsProvider>
     </TooltipProvider>
   </QueryClientProvider>

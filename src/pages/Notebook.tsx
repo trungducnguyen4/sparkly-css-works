@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "@/components/NavBar";
-
+import Delete from "./delete.png";
 const Notebook = () => {
   const [vocabulary, setVocabulary] = useState([]); // List of all vocabulary
   const [filteredVocabulary, setFilteredVocabulary] = useState([]); // Filtered list
@@ -9,26 +9,31 @@ const Notebook = () => {
   const [username, setUsername] = useState("exampleUser"); // Replace with actual username from logger or auth
   const itemsPerPage = 10; // Items per page
 
-  // Fetch vocabulary data based on username
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const userId = user?.id || 0;
+   // Lấy từ auth context hoặc mock cứng nếu chưa login
+  console.log("User ID:", userId); // Debugging line
   useEffect(() => {
     const fetchVocabulary = async () => {
       try {
-        const response = await fetch(`/api/notebooks?username=${username}`);
+        const response = await fetch(`http://localhost:9090/api/favorites/user/${userId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch vocabulary");
         }
         const data = await response.json();
+        console.log("Fetched vocabulary:", data);
         setVocabulary(data);
         setFilteredVocabulary(data);
       } catch (error) {
         console.error("Error fetching vocabulary:", error);
       }
     };
-
-    if (username) {
+  
+    if (userId) {
       fetchVocabulary();
     }
-  }, [username]);
+  }, [userId]);
+  
 
   // Filter vocabulary based on search term
   useEffect(() => {
@@ -51,7 +56,27 @@ const Notebook = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
+  const handleDelete = async (id: number, word: string) => {
+    try {
+      const response = await fetch(`http://localhost:9090/api/favorites/${id}`, {
+        method: "DELETE",
+      });
+  
+      if (!response.ok) {
+        throw new Error("Lỗi khi xoá từ vựng");
+      }
+  
+      // Cập nhật UI sau khi xoá
+      const updated = vocabulary.filter((item) => item.id !== id);
+      setVocabulary(updated);
+      setFilteredVocabulary(updated);
+  
+      console.log(`Bạn đã xóa "${word}" thành công`);
+    } catch (error) {
+      console.error("Lỗi xoá từ vựng:", error);
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
@@ -76,16 +101,26 @@ const Notebook = () => {
                 <tr className="bg-gray-100">
                   <th className="border border-gray-300 px-4 py-2 text-left">Từ</th>
                   <th className="border border-gray-300 px-4 py-2 text-left">Ý nghĩa</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">Phương thức</th>
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((item) => (
-                  <tr key={item.id}>
-                    <td className="border border-gray-300 px-4 py-2">{item.word}</td>
-                    <td className="border border-gray-300 px-4 py-2">{item.meaning}</td>
-                  </tr>
-                ))}
-              </tbody>
+  {currentItems.map((item) => (
+    <tr key={item.id}>
+      <td className="border border-gray-300 px-4 py-2">{item.word}</td>
+      <td className="border border-gray-300 px-4 py-2">{item.meaning}</td>
+      <td className="border border-gray-300 px-4 py-2 text-center">
+      <img
+  src={Delete}
+  alt="Delete"
+  className="w-5 h-5 cursor-pointer inline-block"
+  onClick={() => handleDelete(item.id, item.word)}
+/>
+</td>
+    </tr>
+  ))}
+</tbody>
+
             </table>
           </div>
 
