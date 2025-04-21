@@ -14,6 +14,8 @@ import NotFound from "./pages/NotFound";
 import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Upgrade from "./pages/Upgrade";
+import Admin from "./pages/Admin";
 import React from "react";
 import LearnedWordsBox from "./components/LearnedWordsBox";
 import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
@@ -38,6 +40,8 @@ const App = () => (
             <Route path="/chat" element={<Chat />} />
             <Route path="/hub" element={<Hub />} />
             <Route path="/review" element={<ReviewInterface />} /> {/* Register the ReviewInterface route */}
+            <Route path="/upgrade" element={<Upgrade />} />
+            <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

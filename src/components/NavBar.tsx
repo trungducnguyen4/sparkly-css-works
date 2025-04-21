@@ -44,6 +44,9 @@ const NavBar = () => {
             <User className="h-5 w-5" />
             <span className="text-sm">MochiHub</span>
           </Link> */}
+          <Link to="/admin" className="nav-item">
+            <span className="text-sm">Admin</span>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -57,6 +60,12 @@ const NavBar = () => {
               className="w-full h-full object-cover"
             />
           </div>
+          <Link 
+            to="/upgrade" 
+            className="bg-mochi-yellow text-white font-semibold py-1 px-3 rounded-md hover:bg-yellow-500 transition"
+          >
+            Nâng cấp lên Pro
+          </Link>
         </div>
       </div>
     </header>
