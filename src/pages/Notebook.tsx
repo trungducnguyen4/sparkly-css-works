@@ -9,8 +9,10 @@ const Notebook = () => {
   const [username, setUsername] = useState("exampleUser"); // Replace with actual username from logger or auth
   const itemsPerPage = 10; // Items per page
 
-  const userId = 1; // Lấy từ auth context hoặc mock cứng nếu chưa login
-
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const userId = user?.id || 0;
+   // Lấy từ auth context hoặc mock cứng nếu chưa login
+  console.log("User ID:", userId); // Debugging line
   useEffect(() => {
     const fetchVocabulary = async () => {
       try {

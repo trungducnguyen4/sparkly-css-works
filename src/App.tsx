@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
 
 const queryClient = new QueryClient();
 
@@ -22,22 +23,23 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} /> {/* Login route */}
-          <Route path="/register" element={<Register />} /> {/* Register route */}
-          <Route path="/practice" element={<Practice />} />
-          <Route path="/learn" element={<Learn />} />
-          <Route path="/learn/topic/:topicId" element={<TopicDetail />} />
-          <Route path="/notebook" element={<Notebook />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/hub" element={<Hub />} />
-          <Route path="/review" element={<ReviewInterface />} /> {/* Register the ReviewInterface route */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <LearnedWordsProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/practice" element={<Practice />} />
+            <Route path="/learn" element={<Learn />} />
+            <Route path="/learn/topic/:topicId" element={<TopicDetail />} />
+            <Route path="/notebook" element={<Notebook />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/hub" element={<Hub />} />
+            <Route path="/review" element={<ReviewInterface />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </LearnedWordsProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
