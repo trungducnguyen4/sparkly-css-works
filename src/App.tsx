@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Admin from "./pages/Admin"; // Import the Admin component
 import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/chat" element={<Chat />} />
             <Route path="/hub" element={<Hub />} />
             <Route path="/review" element={<ReviewInterface />} />
+            <Route path="/admin" element={<Admin />} /> {/* Add Admin route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
