@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+<<<<<<< Updated upstream
 import Admin from "./pages/Admin"; // Import the Admin component
 =======
 import Admin from "./pages/Admin";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/chat" element={<Chat />} />
             <Route path="/hub" element={<Hub />} />
             <Route path="/review" element={<ReviewInterface />} />
+<<<<<<< Updated upstream
             <Route path="/admin" element={<Admin />} /> {/* Add Admin route */}
 =======
             <Route path="/admin" element={<Admin />} />
