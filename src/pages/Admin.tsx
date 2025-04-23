@@ -212,7 +212,7 @@ const Admin = () => {
                   <th className="border border-gray-300 px-4 py-2">Learning Mode</th>
                   <th className="border border-gray-300 px-4 py-2">Total Words Learned</th>
                   <th className="border border-gray-300 px-4 py-2">Paid</th>
-                  <th className="border border-gray-300 px-4 py-2">Admin</th>
+                  {/* <th className="border border-gray-300 px-4 py-2">Admin</th> */}
                   <th className="border border-gray-300 px-4 py-2">Actions</th>
                 </tr>
               </thead>
