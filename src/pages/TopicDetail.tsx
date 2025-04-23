@@ -18,6 +18,8 @@ const TopicDetail = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const { setTotalWordsLearned } = useLearnedWords();
   const [savedWordIds, setSavedWordIds] = useState<number[]>([]);
+  const [fetchError, setFetchError] = useState<string | null>(null); // State for API error
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     if (user && user.learningMode) {
@@ -45,8 +47,13 @@ const TopicDetail = () => {
           headers: { Authorization: `Basic ${token}` },
         });
         setVocabulary(response.data);
-      } catch (error) {
+        setFetchError(null); // Clear any previous errors
+      } catch (error: any) {
         console.error('Error fetching vocabulary:', error);
+        setFetchError(
+          error.response?.data?.message || 
+          'An error occurred while fetching vocabulary. Please try again later.'
+        );
       }
     };
   
@@ -143,6 +150,22 @@ const TopicDetail = () => {
   };
 
   const currentVocabulary = vocabulary[currentIndex];
+
+  if (fetchError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+        <NavBar />
+        <h1 className="text-xl font-bold text-red-500">Error</h1>
+        <p className="text-gray-700">{fetchError}</p>
+        <button
+          onClick={goBack}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   if (!currentVocabulary) {
     return (
