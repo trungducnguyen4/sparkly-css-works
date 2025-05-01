@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import NavBar from '../components/NavBar'; // Import the NavBar component
+import NavBar from '../components/NavBar';
 
 const TopicCard = ({
   id,
@@ -10,6 +10,7 @@ const TopicCard = ({
   number,
   image,
   onClick,
+  isLocked,
 }: {
   id: string;
   title: string;
@@ -17,11 +18,14 @@ const TopicCard = ({
   number: number;
   image: string;
   onClick: () => void;
+  isLocked: boolean;
 }) => {
   return (
     <div
-      className="bg-green-500 hover:bg-green-600 transition-colors rounded-xl p-4 mb-4 cursor-pointer flex items-center gap-4"
-      onClick={onClick}
+      className={`relative bg-green-500 ${
+        isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-600 cursor-pointer'
+      } transition-colors rounded-xl p-4 mb-4 flex items-center gap-4`}
+      onClick={!isLocked ? onClick : undefined}
     >
       <div className="w-16 h-16 rounded-full overflow-hidden bg-white flex-shrink-0 border-2 border-white">
         <img src={image} alt={title} className="w-full h-full object-cover" />
@@ -32,42 +36,68 @@ const TopicCard = ({
           {number}. {subtitle}
         </p>
       </div>
+      {isLocked && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <span className="text-white text-lg font-bold">🔒</span>
+        </div>
+      )}
     </div>
   );
 };
 
 const Learn = () => {
   const navigate = useNavigate();
-  const [topics, setTopics] = useState<any[]>([]); // Add state for topics
+  const [topics, setTopics] = useState<any[]>([]);
+  const [userSubscription, setUserSubscription] = useState<any>(null);
 
   useEffect(() => {
-    console.log('Fetching topics...');
-    const username = 'admin'; // Replace with your username
-    const password = '1'; // Replace with your password
-    const token = btoa(`${username}:${password}`); // Encode credentials in Base64
+    const fetchTopics = async () => {
+      try {
+        const username = 'admin';
+        const password = '1';
+        const token = btoa(`${username}:${password}`);
 
-    axios
-      .get('http://localhost:9090/api/topics', {
-        headers: {
-          Authorization: `Basic ${token}`, // Add Basic Auth header
-        },
-      })
-      .then((response) => {
-        console.log('Response received:', response.data);
-        setTopics(response.data); // Set the topics state
-      })
-      .catch((error) => {
+        const topicsResponse = await axios.get('http://localhost:9090/api/topics', {
+          headers: {
+            Authorization: `Basic ${token}`,
+          },
+        });
+        setTopics(topicsResponse.data);
+      } catch (error) {
         console.error('Error fetching topics:', error);
-      });
+      }
+    };
+
+    const fetchUserSubscription = async () => {
+      try {
+        const userId = 1; // Replace with the actual user ID
+        const subscriptionResponse = await axios.get(`http://localhost:9090/api/premium/${userId}`);
+        setUserSubscription(subscriptionResponse.data);
+      } catch (error) {
+        console.error('Error fetching user subscription:', error);
+        setUserSubscription(null); // No subscription or expired
+      }
+    };
+
+    fetchTopics();
+    fetchUserSubscription();
   }, []);
 
   const handleTopicClick = (topicId: string) => {
-    navigate(`/learn/topic/${topicId}`); // Fix typo: use navigate instead of navigator
+    navigate(`/learn/topic/${topicId}`);
+  };
+
+  const isTopicLocked = (topic: any) => {
+    if (!topic.paid) return false; // Free topics are not locked
+    if (!userSubscription) return true; // No subscription
+    const currentDate = new Date();
+    const expireDate = new Date(userSubscription.expireDate);
+    return currentDate > expireDate; // Locked if subscription expired
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <NavBar /> {/* Add the NavBar component here */}
+      <NavBar />
       <div className="container mx-auto py-8 px-4">
         <button
           onClick={() => navigate('/')}
@@ -87,6 +117,7 @@ const Learn = () => {
             number={index + 1}
             image={topic.image || 'https://via.placeholder.com/150'}
             onClick={() => handleTopicClick(topic.id)}
+            isLocked={isTopicLocked(topic)}
           />
         ))}
       </div>

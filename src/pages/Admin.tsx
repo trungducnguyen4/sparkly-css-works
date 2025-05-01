@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import jsPDF from "jspdf"; // Import jsPDF for PDF generation
+import autoTable from "jspdf-autotable"; // Import the autoTable plugin
+import { saveAs } from "file-saver"; // Import file-saver for Word export
+import { Document, Packer, Paragraph, Table, TableCell, TableRow, TextRun } from "docx"; // Import docx for Word generation
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState<string>("users");
@@ -86,7 +90,7 @@ const Admin = () => {
         isAdmin: false,
       });
     } else if (activeSection === "vocabulary") {
-      setModalData({ word: "", example: "", sound: "", translate: "", topic: { id: "", name: "" } });
+      setModalData({ word: "", example: "", sound: "", translate: "", topic: null });
     }
     setShowModal(true);
   };
@@ -147,6 +151,7 @@ const Admin = () => {
     try {
       if (activeSection === "users") {
         if (modalData.id) {
+          console.log("Payload gửi lên:", modalData);
           // Edit existing user
           await axios.put(
             `http://localhost:9090/api/admin/users/${modalData.id}`,
@@ -163,16 +168,32 @@ const Admin = () => {
         }
       } else if (activeSection === "vocabulary") {
         if (modalData.id) {
+          const payload = {
+            word: modalData.word,
+            example: modalData.example,
+            sound: modalData.sound,
+            translate: modalData.translate,
+            topicId: modalData.topic?.id || null,
+          };
+          console.log("Dữ liệu gửi PUT:", payload);
           // Edit existing vocabulary
           await axios.put(
             `http://localhost:9090/api/admin/vocabulary/${modalData.id}`,
-            modalData,
+            payload,
             { headers: { Authorization: `Basic ${token}` } }
           );
           console.log("Vocabulary updated successfully");
         } else {
+          const payload = {
+            word: modalData.word,
+            example: modalData.example,
+            sound: modalData.sound,
+            translate: modalData.translate,
+            topicId: modalData.topic?.id || null,
+          };
+          console.log("Dữ liệu gửi POST:", payload);
           // Add new vocabulary
-          await axios.post("http://localhost:9090/api/admin/vocabulary", modalData, {
+          await axios.post("http://localhost:9090/api/admin/vocabulary", payload, {
             headers: { Authorization: `Basic ${token}` },
           });
           console.log("Vocabulary added successfully");
@@ -182,6 +203,71 @@ const Admin = () => {
       fetchData(); // Re-fetch data to update the list
     } catch (error) {
       console.error("Error saving data:", error);
+    }
+  };
+
+  const handleExport = async (format: string) => {
+    try {
+      if (format === "pdf") {
+        const doc = new jsPDF();
+        doc.text("Vocabulary Table", 14, 10); // Add title
+        autoTable(doc, {
+          head: [["Word", "Example", "Sound", "Translate", "Topic"]],
+          body: data.map((vocab: any) => [
+            vocab.word,
+            vocab.example,
+            vocab.sound,
+            vocab.translate,
+            vocab.topic?.name || "N/A",
+          ]),
+        });
+        doc.save("vocabulary.pdf"); // Save the PDF
+      } else if (format === "word") {
+        const tableRows = data.map(
+          (vocab: any) =>
+            new TableRow({
+              children: [
+                new TableCell({ children: [new Paragraph(vocab.word)] }),
+                new TableCell({ children: [new Paragraph(vocab.example)] }),
+                new TableCell({ children: [new Paragraph(vocab.sound)] }),
+                new TableCell({ children: [new Paragraph(vocab.translate)] }),
+                new TableCell({ children: [new Paragraph(vocab.topic?.name || "N/A")] }),
+              ],
+            })
+        );
+
+        const doc = new Document({
+          sections: [
+            {
+              children: [
+                new Paragraph({
+                  children: [new TextRun({ text: "Vocabulary Table", bold: true, size: 28 })],
+                }),
+                new Table({
+                  rows: [
+                    new TableRow({
+                      children: [
+                        new TableCell({ children: [new Paragraph("Word")] }),
+                        new TableCell({ children: [new Paragraph("Example")] }),
+                        new TableCell({ children: [new Paragraph("Sound")] }),
+                        new TableCell({ children: [new Paragraph("Translate")] }),
+                        new TableCell({ children: [new Paragraph("Topic")] }),
+                      ],
+                    }),
+                    ...tableRows,
+                  ],
+                }),
+              ],
+            },
+          ],
+        });
+
+        const blob = await Packer.toBlob(doc);
+        saveAs(blob, "vocabulary.docx"); // Save the Word document
+      }
+    } catch (error) {
+      console.error(`Error exporting to ${format.toUpperCase()}:`, error);
+      setError(`Failed to export to ${format.toUpperCase()}. Please try again.`);
     }
   };
 
@@ -256,6 +342,20 @@ const Admin = () => {
         return (
           <div>
             <h2>Quản lý từ vựng</h2>
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => handleExport("pdf")}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mr-2"
+              >
+                Export to PDF
+              </button>
+              <button
+                onClick={() => handleExport("word")}
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+              >
+                Export to Word
+              </button>
+            </div>
             <table className="table-auto w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-200">
@@ -411,7 +511,7 @@ const Admin = () => {
                 <label className="mr-2">Admin:</label>
                 <input
                   type="checkbox"
-                  checked={modalData.isAdmin}
+                  checked={modalData.isAdmin || false}
                   onChange={(e) => setModalData({ ...modalData, isAdmin: e.target.checked })}
                 />
               </div>
@@ -466,12 +566,16 @@ const Admin = () => {
               />
               <select
                 value={modalData.topic?.id || ""}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const selectedId = parseInt(e.target.value);
+                  const selectedTopic = topics.find((topic) => topic.id === selectedId);
+
+                  console.log("Bạn vừa chọn Topic:", selectedTopic);
                   setModalData({
                     ...modalData,
                     topic: topics.find((topic: any) => topic.id === parseInt(e.target.value)),
-                  })
-                }
+                  });
+                }}
                 className="w-full mb-4 p-2 border rounded"
               >
                 <option value="" disabled>
