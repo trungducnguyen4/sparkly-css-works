@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
+
 import { BookOpen, BarChart2, BookMarked, MessageSquare, User } from 'lucide-react';
 
 const NavBar = () => {
   const [username, setUsername] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     // Retrieve user data from localStorage
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -12,7 +13,11 @@ const NavBar = () => {
       setUsername(user.username); // Set the username
     }
   }, []);
-
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("authToken");
+    navigate("/login");
+  };
   return (
     <header className="w-full bg-white shadow-sm py-2 px-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -66,6 +71,13 @@ const NavBar = () => {
           >
             Nâng cấp lên Pro
           </Link>
+          {/* Nút Đăng Xuất */}
+          <button 
+            onClick={handleLogout}
+            className="bg-red-500 text-white font-semibold py-1 px-3 rounded-md hover:bg-red-600 transition"
+          >
+            Đăng Xuất
+          </button>
         </div>
       </div>
     </header>
