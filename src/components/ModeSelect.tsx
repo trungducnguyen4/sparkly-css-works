@@ -8,46 +8,50 @@ const learningModes = [
 
 export function ModeSelect() {
   const [selectedMode, setSelectedMode] = useState(learningModes[0]);
-  const [message, setMessage] = useState("");
 
   const handleModeChange = async (mode) => {
     setSelectedMode(mode);
     console.log(`Selected mode: ${mode.label}`);
-  
+
     // Retrieve user from localStorage
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-  
-    if (!user?.username) {
-      console.error("Username not found in localStorage");
-      setMessage("Failed to update learning mode: User not logged in.");
+    const userString = localStorage.getItem("user");
+    if (!userString) {
+      console.error("User not found in localStorage");
       return;
     }
-  
+
+    const user = JSON.parse(userString);
+    if (!user?.username) {
+      console.error("Username not found in localStorage");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:9090/api/learning-mode/set", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
           mode: mode.value,
-          username: user.username, // Send the username
+          username: user.username,
         }),
       });
-  
+
       if (response.ok) {
         const result = await response.text();
-        setMessage(result); // Display the backend response
-  
+        console.log("Server response:", result);
+
         // Update learningMode in localStorage
         const updatedUser = { ...user, learningMode: mode.value };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         console.log("Updated user in localStorage:", updatedUser);
       } else {
-        console.error("Failed to update learning mode on the server");
-        setMessage("Failed to update learning mode.");
+        const errorText = await response.text();
+        console.error("Failed to update learning mode on the server:", errorText);
+        alert(`Error: ${errorText}`);
       }
     } catch (error) {
       console.error("Error updating learning mode:", error);
-      setMessage("Failed to update learning mode.");
+      alert(`Error: ${error.message}`);
     }
   };
 
@@ -63,6 +67,7 @@ export function ModeSelect() {
             className={`px-6 py-2 ${
               selectedMode.value === mode.value ? "bg-blue-500 text-white" : ""
             }`}
+            aria-pressed={selectedMode.value === mode.value}
           >
             {mode.label}
           </Button>
@@ -71,7 +76,6 @@ export function ModeSelect() {
       <p className="text-sm text-gray-500">
         Bạn đã chọn: <span className="font-medium">{selectedMode.label}</span>
       </p>
-      {message && <p className="text-sm text-gray-500 mt-2">{message}</p>}
     </div>
   );
 }

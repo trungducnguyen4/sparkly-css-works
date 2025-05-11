@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { BookOpen, BarChart2, BookMarked, MessageSquare, User } from 'lucide-react';
 
@@ -55,7 +55,10 @@ const NavBar = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <div className="text-mochi-yellow font-semibold">
+          <div 
+            className="text-mochi-yellow font-semibold cursor-pointer"
+            onClick={() => navigate("/profile")}
+          >
             {username || "Guest"} {/* Display username or fallback to "Guest" */}
           </div>
           <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border-2 border-mochi-yellow">

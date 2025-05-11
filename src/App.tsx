@@ -15,7 +15,11 @@ import ReviewInterface from "@/components/ReviewInterface";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
+import AdminVocab from "./pages/AdminVocab"; // Import AdminVocab
+import AdminUser from "./pages/AdminUser"; // Import AdminUser
+import AdminTopic from "./pages/AdminTopic"; // Import AdminTopic
 import Upgrade from "./pages/Upgrade"; // Import the Upgrade component
+import Profile from "./pages/Profile"; // Import Profile
 import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
 import LearnedWordsBox from "@/components/LearnedWordsBox"; // Import LearnedWordsBox
 
@@ -46,6 +50,7 @@ const App = () => (
                     <Route path="/hub" element={<Hub />} />
                     <Route path="/review" element={<ReviewInterface />} />
                     <Route path="/upgrade" element={<Upgrade />} /> {/* Add Upgrade route */}
+                    <Route path="/profile" element={<Profile />} /> {/* Add Profile route */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </>
@@ -53,6 +58,9 @@ const App = () => (
             }
           />
           <Route path="/admin" element={<Admin />} /> {/* Exclude LearnedWordsBox */}
+          <Route path="/admin/vocabulary" element={<AdminVocab />} /> {/* Add AdminVocab route */}
+          <Route path="/admin/users" element={<AdminUser />} /> {/* Add AdminUser route */}
+          <Route path="/admin/topics" element={<AdminTopic />} /> {/* Add AdminTopic route */}
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
