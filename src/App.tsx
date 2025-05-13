@@ -11,12 +11,18 @@ import Chat from "./pages/Chat";
 import Hub from "./pages/Hub";
 import TopicDetail from "./pages/TopicDetail";
 import NotFound from "./pages/NotFound";
-import ReviewInterface from "@/components/ReviewInterface"; // Import the ReviewInterface component
+import ReviewInterface from "@/components/ReviewInterface";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Admin from "./pages/Admin"; // Import the Admin component
+import Admin from "./pages/Admin";
+import AdminVocab from "./pages/AdminVocab"; // Import AdminVocab
+import AdminUser from "./pages/AdminUser"; // Import AdminUser
+import AdminTopic from "./pages/AdminTopic"; // Import AdminTopic
+import Upgrade from "./pages/Upgrade"; // Import the Upgrade component
+import Profile from "./pages/Profile"; // Import Profile
 import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
-import { PrivateRoute, AdminRoute } from "./components/ProtectedRoute";
+import LearnedWordsBox from "@/components/LearnedWordsBox"; // Import LearnedWordsBox
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -24,30 +30,39 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <LearnedWordsProvider>
-        <BrowserRouter>
+      <BrowserRouter>
         <Routes>
-        <Route path="/" element={<PrivateRoute><Index /></PrivateRoute>} />
-    <Route path="/practice" element={<PrivateRoute><Practice /></PrivateRoute>} />
-    <Route path="/learn" element={<PrivateRoute><Learn /></PrivateRoute>} />
-    <Route path="/learn/topic/:topicId" element={<PrivateRoute><TopicDetail /></PrivateRoute>} />
-    <Route path="/notebook" element={<PrivateRoute><Notebook /></PrivateRoute>} />
-    <Route path="/chat" element={<PrivateRoute><Chat /></PrivateRoute>} />
-    <Route path="/hub" element={<PrivateRoute><Hub /></PrivateRoute>} />
-    <Route path="/review" element={<PrivateRoute><ReviewInterface /></PrivateRoute>} />
-
-    {/* Route dành riêng cho admin */}
-    <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
-
-    {/* Route không cần đăng nhập */}
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-
-    {/* Route 404 */}
-    <Route path="*" element={<NotFound />} />
-          </Routes>
-          </BrowserRouter>
-      </LearnedWordsProvider>
+          <Route
+            path="*"
+            element={
+              <LearnedWordsProvider>
+                <>
+                  <LearnedWordsBox /> {/* Add LearnedWordsBox */}
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/practice" element={<Practice />} />
+                    <Route path="/learn" element={<Learn />} />
+                    <Route path="/learn/topic/:topicId" element={<TopicDetail />} />
+                    <Route path="/notebook" element={<Notebook />} />
+                    <Route path="/chat" element={<Chat />} />
+                    <Route path="/hub" element={<Hub />} />
+                    <Route path="/review" element={<ReviewInterface />} />
+                    <Route path="/upgrade" element={<Upgrade />} /> {/* Add Upgrade route */}
+                    <Route path="/profile" element={<Profile />} /> {/* Add Profile route */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </>
+              </LearnedWordsProvider>
+            }
+          />
+          <Route path="/admin" element={<Admin />} /> {/* Exclude LearnedWordsBox */}
+          <Route path="/admin/vocabulary" element={<AdminVocab />} /> {/* Add AdminVocab route */}
+          <Route path="/admin/users" element={<AdminUser />} /> {/* Add AdminUser route */}
+          <Route path="/admin/topics" element={<AdminTopic />} /> {/* Add AdminTopic route */}
+        </Routes>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
