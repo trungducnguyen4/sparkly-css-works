@@ -21,38 +21,48 @@ const Profile = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/user/update-username', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
-        },
-        body: JSON.stringify({ username }),
-      });
-
-      if (response.ok) {
-        const updatedUser = await response.json();
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        alert('Username updated successfully!');
-        window.location.reload(); // Reload to update NavBar
-      } else {
-        const error = await response.json();
-        alert(`Failed to update username: ${error.message}`);
-      }
-    } catch (error) {
-      alert('An error occurred while updating the username.');
-    }
-  };
-
-  const handleChangePassword = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/user/change-password', {
+      console.log('Cập nhật username:', username);
+      const response = await fetch('http://localhost:9090/api/users/update-username', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
         },
         body: JSON.stringify({
+          email: JSON.parse(localStorage.getItem('user')).email,
+          username
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        localStorage.setItem('user', JSON.stringify(result));
+        alert('Cập nhật thông tin thành công!');
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        window.location.reload();
+      } else {
+        alert(`Lỗi: ${result.message}`);
+      }
+    } catch (error) {
+      alert('Có lỗi xảy ra khi cập nhật thông tin.');
+    }
+  };
+  
+
+  const handleChangePassword = async () => {
+    try {console.log('Đổi mật khẩu:', { oldPassword, newPassword, confirmPassword });
+
+      const response = await fetch('http://localhost:9090/api/users/change-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          email: JSON.parse(localStorage.getItem('user')).email,
           oldPassword,
           newPassword,
           confirmPassword,

@@ -101,6 +101,9 @@ const TopicDetail = () => {
 
   const handleAddToFavorites = async () => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
+    
+    console.log("⭐ user:", user);
+    
     if (!user || !user.id) {
       alert("User ID is missing. Please log in again.");
       return;
@@ -108,9 +111,11 @@ const TopicDetail = () => {
 
     try {
       const vocabularyId = vocabulary[currentIndex].id;
+      console.log("⭐ vocabularyId:", vocabularyId);
       await axios.post(`http://localhost:9090/api/favorites`, {
-        user: { id: user.id },
-        vocabulary: { id: vocabularyId },
+        userId: user.id,
+    vocabularyId: vocabulary[currentIndex].id,
+        
       });
 
       setSavedWordIds(prev => [...prev, vocabularyId]);
