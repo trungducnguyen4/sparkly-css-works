@@ -3,6 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NavBar from '../components/NavBar';
 
+// Thêm interceptor cho axios (chỉ cần chạy 1 lần ở đầu app)
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 const TopicCard = ({
   id,
   title,
@@ -70,7 +81,13 @@ const Learn = () => {
 
     const fetchUserSubscription = async () => {
       try {
-        const userId = 1; // Replace with the actual user ID
+        // Lấy userId từ localStorage (giả sử user object có trường id)
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const userId = user.id;
+        if (!userId) {
+          setUserSubscription(null);
+          return;
+        }
         const subscriptionResponse = await axios.get(`http://localhost:9090/api/premium/${userId}`);
         setUserSubscription(subscriptionResponse.data);
       } catch (error) {

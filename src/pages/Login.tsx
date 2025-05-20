@@ -1,10 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+
+// Custom hook để kiểm tra đăng nhập cho user
+export function useRequireUserAuth() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    const token = sessionStorage.getItem("authToken");
+    if (!user || !token) {
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
+}
+
+// Custom hook để kiểm tra đăng nhập cho admin
+export function useRequireAdminAuth() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const admin = localStorage.getItem("admin");
+    const token = sessionStorage.getItem("adminToken"); // Sửa lại key ở đây
+    if (!admin || !token) {
+      navigate("/adminlogin", { replace: true });
+    }
+  }, [navigate]);
+}
 
 const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+
+  // Nếu đã đăng nhập user thì chuyển hướng về trang chủ
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    const token = sessionStorage.getItem("authToken");
+    if (user && token) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -90,6 +123,15 @@ const Login = () => {
           <Button type="submit" className="w-full py-2">
             Đăng nhập
           </Button>
+          <div className="text-right mt-2">
+            <button
+              type="button"
+              className="text-blue-500 underline text-sm"
+              onClick={() => navigate("/forgot-password")}
+            >
+              Quên mật khẩu?
+            </button>
+          </div>
         </form>
         <p className="text-sm text-center text-gray-500 mt-4">
           Chưa có tài khoản?{" "}
