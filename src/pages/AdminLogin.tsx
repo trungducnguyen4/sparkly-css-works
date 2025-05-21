@@ -92,7 +92,16 @@ const AdminLogin = () => {
           <button
             type="button"
             className="text-blue-500 underline text-sm"
-            onClick={() => navigate("/")}
+            onClick={() => {
+          const user = localStorage.getItem("user");
+          const token = sessionStorage.getItem("authToken");
+          if (user && token) {
+            navigate("/", { replace: true }); // Nếu đã đăng nhập user thì cho vào trang chủ
+          } else {
+            navigate("/login", { replace: true }); // Nếu chưa đăng nhập thì chuyển về trang đăng nhập
+          }
+        }}
+
           >
             Về trang chủ
           </button>

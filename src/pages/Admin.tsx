@@ -1,13 +1,30 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect }  from "react";
+import { useNavigate, Outlet } from "react-router-dom";
 
 const Admin = () => {
   const navigate = useNavigate();
-
+  useEffect(() => {
+    const adminRaw = localStorage.getItem("admin");
+    if (adminRaw) {
+      try {
+        const admin = JSON.parse(adminRaw);
+        console.log(" Admin info:", admin);
+      } catch (e) {
+        console.error(" Lỗi khi parse thông tin admin:", e);
+      }
+    } else {
+      console.warn(" Không tìm thấy thông tin admin trong localStorage.");
+    }
+  }, []);
+   const handleLogout = () => {
+    localStorage.removeItem("admin");
+    sessionStorage.removeItem("adminToken");
+    navigate("/adminlogin", { replace: true });
+  };
   return (
     <div className="flex min-h-screen bg-gray-100">
       <aside className="w-64 bg-gray-800 text-white">
-        <div className="p-4 font-bold text-lg">Admin Panel</div>
+        <div className="p-4 font-bold text-lg cursor-pointer " onClick={() => navigate("/admin")}>Admin Panel</div>
         <nav className="space-y-2">
           <button
             onClick={() => navigate("/admin/users")}
@@ -28,12 +45,18 @@ const Admin = () => {
             Quản lý chủ đề
           </button>
         </nav>
+        <div className="p-4">
+          <button
+            onClick={handleLogout}
+            className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+          >
+            Đăng xuất
+          </button>
+        </div>
       </aside>
       <main className="flex-1 p-6">
-        <h1 className="text-2xl font-bold">Welcome to the Admin Panel</h1>
-        <p className="text-gray-600 mt-4">
-          Use the navigation menu to manage users, vocabulary, and topics.
-        </p>
+       
+        <Outlet /> {/* 👈 Phần nội dung route con sẽ được render ở đây */}
       </main>
     </div>
   );
