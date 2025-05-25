@@ -19,6 +19,8 @@ const TopicDetail = () => {
   const { setTotalWordsLearned } = useLearnedWords();
   const [savedWordIds, setSavedWordIds] = useState<number[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null); // State for API error
+  const [addFavoriteError, setAddFavoriteError] = useState<string | null>(null);
+  const [failedUserInfo, setFailedUserInfo] = useState<any>(null);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -99,30 +101,36 @@ const TopicDetail = () => {
     navigate('/learn');
   };
 
-  const handleAddToFavorites = async () => {
+const handleAddToFavorites = async () => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    
-    console.log("⭐ user:", user);
-    
+    console.log("⭐ user object in handleAddToFavorites:", user);
     if (!user || !user.id) {
-      alert("User ID is missing. Please log in again.");
-      return;
+        console.warn("User object missing id:", user);
+        alert("User ID is missing. Please log in again.");
+        return;
     }
 
     try {
-      const vocabularyId = vocabulary[currentIndex].id;
-      console.log("⭐ vocabularyId:", vocabularyId);
-      await axios.post(`http://localhost:9090/api/favorites`, {
-        userId: user.id,
-    vocabularyId: vocabulary[currentIndex].id,
-        
-      });
+        const vocabularyId = vocabulary[currentIndex].id;
+        const userId = Number(user.id);
+        // Payload đúng cho backend
+        const payload = {
+            user: { id: userId },
+            vocabulary: { id: vocabularyId }
+        };
+        console.log("⭐ Payload being sent:", payload);
 
-      setSavedWordIds(prev => [...prev, vocabularyId]);
-      alert("Vocabulary added to favorites!");
-    } catch (error) {
-      console.error("Error adding to favorites:", error.response?.data || error.message);
-      alert("An error occurred while adding the vocabulary to favorites.");
+        await axios.post(`http://localhost:9090/api/favorites`, payload);
+
+        setSavedWordIds(prev => [...prev, vocabularyId]);
+        setAddFavoriteError(null);
+        setFailedUserInfo(null);
+        alert("Vocabulary added to favorites!");
+    } catch (error: any) {
+        console.error("Error adding to favorites:", error.response?.data || error.message);
+        setAddFavoriteError("An error occurred while adding the vocabulary to favorites.");
+        setFailedUserInfo(user);
+        alert("An error occurred while adding the vocabulary to favorites.");
     }
   };
 
@@ -189,6 +197,16 @@ const TopicDetail = () => {
       <div className="min-h-screen bg-gray-50 flex flex-col items-center">
         <NavBar />
         <h1 className="text-2xl font-bold mb-4">Flashcard Mode</h1>
+        {/* Show user info if add to favorites failed */}
+        {addFavoriteError && failedUserInfo && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-300 rounded text-red-700 w-full max-w-md">
+            <div className="font-semibold mb-1">Add to favorites failed!</div>
+            <div className="mb-1">{addFavoriteError}</div>
+            <div className="text-xs break-all">
+              <pre>{JSON.stringify(failedUserInfo, null, 2)}</pre>
+            </div>
+          </div>
+        )}
         <div className="w-full max-w-md h-64 perspective">
           <div className={`flip-container ${isFlipped ? 'rotate-y-180' : ''}`}>
             <Card className="backface-hidden p-8 rounded-3xl bg-white shadow-md flex items-center justify-center">
@@ -215,22 +233,20 @@ const TopicDetail = () => {
                 Play Sound
               </Button>
               {isSavedCurrentWord ? (
-  <Button
-    disabled
-    className="mt-4 py-2 px-4 rounded-full bg-gray-400 text-white cursor-default"
-  >
-    Saved
-  </Button>
-) : (
-  <Button
-    onClick={handleAddToFavorites}
-    className="mt-4 py-2 px-4 rounded-full bg-green-500 text-white hover:bg-green-600"
-  >
-    Save to Notebook
-  </Button>
-)}
-
-
+                <Button
+                  disabled
+                  className="mt-4 py-2 px-4 rounded-full bg-gray-400 text-white cursor-default"
+                >
+                  Saved
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleAddToFavorites}
+                  className="mt-4 py-2 px-4 rounded-full bg-green-500 text-white hover:bg-green-600"
+                >
+                  Save to Notebook
+                </Button>
+              )}
             </Card>
           </div>
         </div>
