@@ -54,7 +54,7 @@ export default function ReviewInterface() {
     } catch (error) {
       console.error("Error fetching question:", error.response?.data || error.message);
       if (error.response?.status === 400) {
-        setQuestion("Yêu cầu không hợp lệ. Vui lòng kiểm tra tài khoản.");
+        setQuestion("bạn đã kiểm tra hết từ cần ôn tập");
       } else if (error.response?.status === 404) {
         setQuestion("Không có từ nào cần ôn hôm nay.");
       } else {

@@ -41,6 +41,10 @@ const NavBar = () => {
             <BookMarked className="h-5 w-5" />
             <span className="text-sm">Sổ tay</span>
           </Link>
+          <Link to="/learningprogress" className="nav-item">
+            <BarChart2 className="h-5 w-5" />
+            <span className="text-sm">Tiến độ học</span>
+          </Link>
           {/* <Link to="/chat" className="nav-item">
             <MessageSquare className="h-5 w-5" />
             <span className="text-sm">Hội thoại</span>

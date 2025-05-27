@@ -11,6 +11,7 @@ const AdminVocab = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalData, setModalData] = useState<any>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [popup, setPopup] = useState<string | null>(null);
 
   const fetchData = async () => {
     const username = "admin";
@@ -58,6 +59,20 @@ const AdminVocab = () => {
     setShowModal(true);
   };
 
+  // Xử lý chọn file âm thanh
+  const handleSoundFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith(".mp3")) {
+      alert("Vui lòng chọn file có đuôi .mp3");
+      return;
+    }
+    setModalData((prev: any) => ({
+      ...prev,
+      sound: `http://localhost:9090/sounds/${file.name}`,
+    }));
+  };
+
   const handleDelete = (id: string) => {
     setDeleteId(id);
   };
@@ -74,6 +89,7 @@ const AdminVocab = () => {
       });
       setData((prevData) => prevData.filter((vocab: any) => vocab.id !== deleteId));
       setDeleteId(null);
+      setPopup("Xóa từ vựng thành công!");
     } catch (error) {
       console.error("Error deleting vocabulary:", error);
     }
@@ -97,10 +113,12 @@ const AdminVocab = () => {
         await axios.put(`http://localhost:9090/api/admin/vocabulary/${modalData.id}`, payload, {
           headers: { Authorization: `Basic ${token}` },
         });
+        setPopup("Cập nhật từ vựng thành công!");
       } else {
         await axios.post("http://localhost:9090/api/admin/vocabulary", payload, {
           headers: { Authorization: `Basic ${token}` },
         });
+        setPopup("Thêm từ vựng mới thành công!");
       }
 
       setShowModal(false);
@@ -254,13 +272,26 @@ const AdminVocab = () => {
               onChange={(e) => setModalData({ ...modalData, example: e.target.value })}
               className="w-full mb-2 p-2 border rounded"
             />
-            <input
-              type="text"
-              placeholder="Sound"
-              value={modalData.sound}
-              onChange={(e) => setModalData({ ...modalData, sound: e.target.value })}
-              className="w-full mb-2 p-2 border rounded"
-            />
+            {/* Sound input: chọn file mp3 */}
+            <div className="mb-2">
+              <label className="block mb-1 font-medium">Sound (.mp3):</label>
+              <input
+                type="file"
+                accept=".mp3"
+                onChange={handleSoundFileChange}
+                className="w-full mb-1"
+              />
+              <input
+                type="text"
+                placeholder="Sound URL"
+                value={modalData.sound}
+                readOnly
+                className="w-full p-2 border rounded bg-gray-100"
+              />
+              <small className="text-gray-500">
+                Đường dẫn sẽ là: http://localhost:9090/sounds/tên-file.mp3
+              </small>
+            </div>
             <input
               type="text"
               placeholder="Translate"
@@ -322,6 +353,20 @@ const AdminVocab = () => {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {popup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-black bg-opacity-40 absolute inset-0"></div>
+          <div className="relative bg-white px-8 py-6 rounded shadow-lg z-10 min-w-[250px] flex flex-col items-center">
+            <span className="mb-2">{popup}</span>
+            <button
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => setPopup(null)}
+            >
+              OK
+            </button>
           </div>
         </div>
       )}

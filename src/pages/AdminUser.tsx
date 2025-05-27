@@ -6,6 +6,7 @@ const AdminUser = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalData, setModalData] = useState<any>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [popup, setPopup] = useState<string | null>(null);
 
   const fetchData = async () => {
     const username = "admin";
@@ -60,6 +61,7 @@ const AdminUser = () => {
       });
       setData((prevData) => prevData.filter((user: any) => user.id !== deleteId));
       setDeleteId(null);
+      setPopup("Xóa người dùng thành công!");
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -75,10 +77,12 @@ const AdminUser = () => {
         await axios.put(`http://localhost:9090/api/admin/users/${modalData.id}`, modalData, {
           headers: { Authorization: `Basic ${token}` },
         });
+        setPopup("Cập nhật người dùng thành công!");
       } else {
         await axios.post("http://localhost:9090/api/admin/users", modalData, {
           headers: { Authorization: `Basic ${token}` },
         });
+        setPopup("Thêm người dùng mới thành công!");
       }
 
       setShowModal(false);
@@ -228,6 +232,20 @@ const AdminUser = () => {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {popup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-black bg-opacity-40 absolute inset-0"></div>
+          <div className="relative bg-white px-8 py-6 rounded shadow-lg z-10 min-w-[250px] flex flex-col items-center">
+            <span className="mb-2">{popup}</span>
+            <button
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => setPopup(null)}
+            >
+              OK
+            </button>
           </div>
         </div>
       )}

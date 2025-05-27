@@ -6,6 +6,8 @@ const AdminTopic = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalData, setModalData] = useState<any>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [popup, setPopup] = useState<string | null>(null);
 
   const fetchData = async () => {
     const username = "admin";
@@ -57,7 +59,10 @@ const AdminTopic = () => {
       });
       setData((prevData) => prevData.filter((topic: any) => topic.id !== deleteId));
       setDeleteId(null);
-    } catch (error) {
+      setDeleteError(null);
+      setPopup("Xóa chủ đề thành công!");
+    } catch (error: any) {
+      setDeleteError("Bạn phải gỡ bỏ hết từ vựng trong topic này thì mới xóa được.");
       console.error("Error deleting topic:", error);
     }
   };
@@ -72,10 +77,12 @@ const AdminTopic = () => {
         await axios.put(`http://localhost:9090/api/admin/topics/${modalData.id}`, modalData, {
           headers: { Authorization: `Basic ${token}` },
         });
+        setPopup("Cập nhật chủ đề thành công!");
       } else {
         await axios.post("http://localhost:9090/api/admin/topics", modalData, {
           headers: { Authorization: `Basic ${token}` },
         });
+        setPopup("Thêm chủ đề mới thành công!");
       }
 
       setShowModal(false);
@@ -177,9 +184,15 @@ const AdminTopic = () => {
           <div className="bg-white p-6 rounded-md w-96">
             <h2 className="text-lg font-bold mb-4">Confirm Delete</h2>
             <p>Are you sure you want to delete this topic?</p>
+            {deleteError && (
+              <p className="text-red-500 mt-2">{deleteError}</p>
+            )}
             <div className="flex justify-end mt-4">
               <button
-                onClick={() => setDeleteId(null)}
+                onClick={() => {
+                  setDeleteId(null);
+                  setDeleteError(null);
+                }}
                 className="px-4 py-2 bg-gray-300 rounded-md mr-2"
               >
                 Cancel
@@ -191,6 +204,20 @@ const AdminTopic = () => {
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {popup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-black bg-opacity-40 absolute inset-0"></div>
+          <div className="relative bg-white px-8 py-6 rounded shadow-lg z-10 min-w-[250px] flex flex-col items-center">
+            <span className="mb-2">{popup}</span>
+            <button
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={() => setPopup(null)}
+            >
+              OK
+            </button>
           </div>
         </div>
       )}

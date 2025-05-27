@@ -26,6 +26,7 @@ import ResetPassword from "./pages/ResetPassword";
 import AdminLogin from "./pages/AdminLogin";
 import { LearnedWordsProvider } from "@/contexts/LearnedWordsContext";
 import LearnedWordsBox from "@/components/LearnedWordsBox"; // Import LearnedWordsBox
+// import LearningProgressPage from "./pages/learningprogress";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ function App() {
                   <Route path="/review" element={<ReviewInterface />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/upgrade" element={<Upgrade />} />
+                  {/* <Route path="/learningprogress" element={<LearningProgressPage />} /> */}
                 </Route>
                 {/* Các route dành riêng cho admin */}
                 <Route element={<ProtectedRoute type="admin" />}>
