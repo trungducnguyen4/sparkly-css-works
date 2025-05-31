@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import NavBar from '../components/NavBar'; // Import NavBar
+import NavBar from '../components/NavBar';
 
 const Profile = () => {
   const [username, setUsername] = useState('');
@@ -15,67 +15,83 @@ const Profile = () => {
     if (user) {
       setUsername(user.username || '');
       setTotalWordsLearned(user.totalWordsLearned || 0);
-      setPremiumExpireDate(user.premiumExpireDate || 'N/A');
+    }
+
+    // Fetch premium expire date from premium controller by user id
+    if (user && user.id) {
+      fetch(`http://localhost:9090/api/premium/expire-date/${user.id}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPremiumExpireDate(data.expireDate || 'N/A');
+        })
+        .catch(() => setPremiumExpireDate('N/A'));
+    } else {
+      setPremiumExpireDate('N/A');
     }
   }, []);
 
-const handleSaveChanges = async () => {
-  try {
-    // Validate username is not empty
-    if (!username || username.trim() === '') {
-      alert('Username không được để trống.');
-      return;
-    }
-
-    // Check if username already exists
-    const checkResponse = await fetch(`http://localhost:9090/api/users/check-username?username=${encodeURIComponent(username)}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
-      },
-    });
-
-    if (checkResponse.ok) {
-      const isUsernameTaken = await checkResponse.json();
-      if (isUsernameTaken) {
-        alert('Username đã tồn tại. Vui lòng chọn username khác.');
+  const handleSaveChanges = async () => {
+    try {
+      // Validate username is not empty
+      if (!username || username.trim() === '') {
+        alert('Username không được để trống.');
         return;
       }
-    } else {
-      alert('Có lỗi xảy ra khi kiểm tra username.');
-      return;
+
+      // Check if username already exists
+      const checkResponse = await fetch(`http://localhost:9090/api/users/check-username?username=${encodeURIComponent(username)}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+        },
+      });
+
+      if (checkResponse.ok) {
+        const isUsernameTaken = await checkResponse.json();
+        if (isUsernameTaken) {
+          alert('Username đã tồn tại. Vui lòng chọn username khác.');
+          return;
+        }
+      } else {
+        alert('Có lỗi xảy ra khi kiểm tra username.');
+        return;
+      }
+
+      // Proceed with updating the username
+      console.log('Cập nhật username:', username);
+      const response = await fetch('http://localhost:9090/api/users/update-username', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+        },
+        body: JSON.stringify({
+          email: JSON.parse(localStorage.getItem('user')).email,
+          username,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('user', JSON.stringify(result));
+        alert('Cập nhật thông tin thành công!');
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        window.location.reload();
+      } else {
+        alert(`Lỗi: ${result.message}`);
+      }
+    } catch (error) {
+      alert('Có lỗi xảy ra khi cập nhật thông tin.');
     }
-
-    // Proceed with updating the username
-    console.log('Cập nhật username:', username);
-    const response = await fetch('http://localhost:9090/api/users/update-username', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
-      },
-      body: JSON.stringify({
-        email: JSON.parse(localStorage.getItem('user')).email,
-        username,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      localStorage.setItem('user', JSON.stringify(result));
-      alert('Cập nhật thông tin thành công!');
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      window.location.reload();
-    } else {
-      alert(`Lỗi: ${result.message}`);
-    }
-  } catch (error) {
-    alert('Có lỗi xảy ra khi cập nhật thông tin.');
-  }
-};
+  };
   
 
   const handleChangePassword = async () => {
@@ -111,7 +127,7 @@ const handleSaveChanges = async () => {
 
   return (
     <>
-      <NavBar /> {/* Add NavBar */}
+      <NavBar />
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Profile</h1>
         <div className="mb-4">
@@ -123,7 +139,7 @@ const handleSaveChanges = async () => {
             className="border p-2 w-full"
           />
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block font-semibold mb-1">Total Words Learned</label>
           <input
             type="number"
@@ -131,7 +147,7 @@ const handleSaveChanges = async () => {
             readOnly
             className="border p-2 w-full bg-gray-100"
           />
-        </div>
+        </div> */}
         <div className="mb-4">
           <label className="block font-semibold mb-1">Premium Expire Date</label>
           <input
