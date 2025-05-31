@@ -16,7 +16,8 @@ const LearnedWordsBox: React.FC = () => {
     "/admin/users",
     "/admin/vocabulary",
     "/admin/manager",
-    "/profile", // ẩn luôn ở trang profile
+    "/profile",
+    "/admin", // ẩn luôn tại /admin
   ];
 
   // Hide component if current path matches any in hiddenPaths

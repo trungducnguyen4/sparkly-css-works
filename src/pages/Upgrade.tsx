@@ -134,22 +134,30 @@ const Upgrade = () => {
                 // Gọi API backend để thêm user vào bảng premium với đúng payload
                 try {
                     const user = JSON.parse(localStorage.getItem("user") || "{}");
+                    if (!user.id) {
+                        alert("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
+                        return;
+                    }
+
                     const payload = {
                         userId: user.id, // Lấy userId từ user object
-                        subscriptionType:
-                            expectedAmount === 2000 ? "gold" : "diamond",
+                        subscriptionType: expectedAmount === 2000 ? "gold" : "diamond",
                     };
-                    const response = await axios.post(
-                        "http://localhost:9090/api/premium/add",
-                        payload
-                    );
+
+                    const response = await axios.post("http://localhost:9090/api/premium/add", payload, {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    });
+
                     if (response.status === 200) {
                         alert(response.data); // Hiển thị thông báo thành công từ backend
                         window.location.href = "http://localhost:8081/learn";
                     } else {
                         alert("Không thể nâng cấp gói. Vui lòng thử lại sau.");
                     }
-                } catch (err) {
+                } catch (err: any) {
+                    console.error("Error:", err.response?.data || err.message);
                     alert("Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
                 }
             } else {

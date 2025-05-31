@@ -102,8 +102,8 @@ const AdminUser = () => {
             <th className="border border-gray-300 px-4 py-2">Username</th>
             <th className="border border-gray-300 px-4 py-2">Learning Mode</th>
             <th className="border border-gray-300 px-4 py-2">Total Words Learned</th>
-            <th className="border border-gray-300 px-4 py-2">Paid</th>
-            <th className="border border-gray-300 px-4 py-2">Admin</th>
+            {/* <th className="border border-gray-300 px-4 py-2">Paid</th>
+            <th className="border border-gray-300 px-4 py-2">Admin</th> */}
             <th className="border border-gray-300 px-4 py-2">Actions</th>
           </tr>
         </thead>
@@ -114,8 +114,8 @@ const AdminUser = () => {
               <td className="border border-gray-300 px-4 py-2">{user.username}</td>
               <td className="border border-gray-300 px-4 py-2">{user.learningMode}</td>
               <td className="border border-gray-300 px-4 py-2">{user.totalWordsLearned}</td>
-              <td className="border border-gray-300 px-4 py-2">{user.paid ? "Yes" : "No"}</td>
-              <td className="border border-gray-300 px-4 py-2">{user.isAdmin ? "Yes" : "No"}</td>
+              {/* <td className="border border-gray-300 px-4 py-2">{user.paid ? "Yes" : "No"}</td>
+              <td className="border border-gray-300 px-4 py-2">{user.isAdmin ? "Yes" : "No"}</td> */}
               <td className="border border-gray-300 px-4 py-2">
                 <button
                   onClick={() => handleEdit(user.id)}
@@ -180,6 +180,7 @@ const AdminUser = () => {
               }
               className="w-full mb-2 p-2 border rounded"
             />
+            {/* 
             <div className="mb-2">
               <label className="mr-2">Paid:</label>
               <input
@@ -196,6 +197,7 @@ const AdminUser = () => {
                 onChange={(e) => setModalData({ ...modalData, isAdmin: e.target.checked })}
               />
             </div>
+            */}
             <div className="flex justify-end">
               <button
                 onClick={() => setShowModal(false)}

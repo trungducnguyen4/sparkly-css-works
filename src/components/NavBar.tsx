@@ -53,9 +53,9 @@ const NavBar = () => {
             <User className="h-5 w-5" />
             <span className="text-sm">MochiHub</span>
           </Link> */}
-          <Link to="/admin" className="nav-item">
+          {/* <Link to="/admin" className="nav-item">
             <span className="text-sm">Admin</span>
-          </Link>
+          </Link> */}
         </nav>
 
         <div className="flex items-center gap-3">

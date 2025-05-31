@@ -148,7 +148,7 @@ const Profile = () => {
             className="border p-2 w-full bg-gray-100"
           />
         </div> */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block font-semibold mb-1">Premium Expire Date</label>
           <input
             type="text"
@@ -156,7 +156,7 @@ const Profile = () => {
             readOnly
             className="border p-2 w-full bg-gray-100"
           />
-        </div>
+        </div> */}
         <button
           onClick={handleSaveChanges}
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
